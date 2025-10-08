@@ -1,3 +1,16 @@
+// src/App.jsx (أول سطرين في الملف)
+import "./firebase"; // يضمن تعيين window.__firebase_config و window.__app_id
+
+// توحيد شكل الإعدادات تحسبًا لو كود قديم يتوقع JSON-String
+if (typeof window.__firebase_config === "string") {
+  try {
+    window.__firebase_config = JSON.parse(window.__firebase_config);
+  } catch {}
+}
+if (!window.__app_id) {
+  window.__app_id = "jaber-school";
+}
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { initializeApp } from 'firebase/app';
 import { 
@@ -509,3 +522,4 @@ const App = () => {
 
 // --- تعريف المكون الرئيسي للتصدير ---
 export default App;
+
