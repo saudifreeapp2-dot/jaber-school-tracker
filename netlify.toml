@@ -1,0 +1,13 @@
+[build]
+  # أمر البناء لتشغيل Vite
+  command = "npm run build"
+  
+  # مجلد النشر
+  publish = "dist"
+
+# إعداد لضمان أن جميع ملفات المجلد الأساسي تُعامل كملفات جذر 
+# مما يساعد في حل مشكلة المسارات المطلقة (مثل /src/main.jsx)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
