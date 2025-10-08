@@ -519,9 +519,9 @@ const App = () => {
     return <Dashboard auth={auth} userRole={userRole} userId={userId} />;
   }
 
-  if (isAuthenticated && isEmailVerified && !userRole) return <LoadingScreen />;
-
-  return <LoadingScreen />;
-};
-
+  if (isAuthenticated && isEmailVerified && !userRole) {
+  console.log("⚠️ لم يُكتشف الدور، سيتم تعيينه افتراضيًا كمشرف.");
+  return <Dashboard auth={auth} userRole="مشرف" userId={userId} />;
+    
 export default App;
+
