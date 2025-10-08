@@ -33,9 +33,17 @@ import {
 import { LayoutDashboard, UserPlus, Send, AlertTriangle, Scale, BarChart3, TrendingUp, Bell, MailCheck } from 'lucide-react';
 
 // --- الثوابت والمتغيرات العالمية (يتم توفيرها من بيئة التشغيل) ---
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-// نستخدم JSON.parse باحتياط إذا كانت القيمة موجودة ومضبوطة
-const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+const appId =
+  (typeof window !== "undefined" && window.__app_id) ? window.__app_id : "jaber-school";
+
+const firebaseConfig =
+  (typeof window !== "undefined" &&
+   window.__firebase_config &&
+   typeof window.__firebase_config === "object" &&
+   window.__firebase_config.apiKey)
+    ? window.__firebase_config
+    : null;
+
 // initialAuthToken لم يعد مستخدماً حيث اعتمدنا على البريد وكلمة المرور
 
 // --- قائمة الأدوار المتاحة ---
@@ -522,4 +530,5 @@ const App = () => {
 
 // --- تعريف المكون الرئيسي للتصدير ---
 export default App;
+
 
