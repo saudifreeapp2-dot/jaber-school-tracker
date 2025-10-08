@@ -1,25 +1,27 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // الحل النهائي لمشكلة المسارات في Netlify:
+  
+  // الإعداد الحاسم لحل مشكلات Netlify
+  // يفرض على Vite استخدام المسار النسبي (./) كمسار أساسي لملفات الإنتاج
+  base: './', 
+
   build: {
-    // إزالة خاصية base: '/' التي تتعارض مع بعض إعدادات Netlify
-    // إعدادات Rollup لحل مشكلة عدم إيجاد المسار (unresolved imports)
+    // إعدادات إضافية لجعل Rollup أكثر تسامحًا مع المسارات (اختياري لكن مفيد)
     rollupOptions: {
       onwarn(warning, warn) {
-        // تجاهل تحذيرات عدم إيجاد المسار الناتجة عن Netlify/Rollup
-        // هذا يسمح لعملية البناء بالاستمرار حتى لو لم يتمكن Rollup من حل المسار النسبي بشكل فوري.
-        if (warning.code === 'UNRESOLVED_IMPORT') {
+        // تجاهل تحذير 'vite: Rollup failed to resolve import "./src/main.jsx"'
+        if (warning.code === 'UNRESOLVED_IMPORT' && warning.source.endsWith('./src/main.jsx')) {
           return;
         }
         warn(warning);
       },
     },
-    // إعدادات إضافية لتحسين التوافق مع بيئة الإنتاج
-    cssCodeSplit: false, // لضمان عدم تقسيم ملفات CSS بشكل معقد
-    sourcemap: false,    // تعطيل خرائط المصدر لتقليل حجم الملفات (اختياري)
-  },
-});
+    // إيقاف خرائط مصدر CSS للمزيد من التسامح (اختياري)
+    cssCodeSplit: false,
+    sourcemap: false
+  }
+})
