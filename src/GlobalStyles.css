@@ -1,0 +1,133 @@
+/* Global Styles for Jaber Bin Abdullah School Tracking System */
+
+/* --- Variables and Base Styling --- */
+:root {
+    --primary-color: #004d40; /* Teal Dark */
+    --secondary-color: #26a69a; /* Teal Light */
+    --accent-color: #f59e0b; /* Amber/Yellow for warnings/actions */
+    --background-color: #f3f4f6; /* Light Gray Background */
+    --card-bg-color: #ffffff;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--background-color);
+    color: #333;
+    line-height: 1.6;
+    /* Ensure RTL is applied globally */
+    direction: rtl; 
+    text-align: right;
+}
+
+/* --- Utility Classes for Components --- */
+
+/* Standard Card Container */
+.app-card {
+    background-color: var(--card-bg-color);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+/* Page Header Styling */
+.app-header {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    padding: 2rem 1rem;
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.app-header-title {
+    font-size: 2.5rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.btn-submit {
+    background-color: #10B981; /* Green */
+}
+
+.btn-submit:hover {
+    background-color: #059669; /* Darker Green */
+}
+
+/* Form Inputs */
+.app-input, .app-textarea, .app-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.app-input:focus, .app-textarea:focus, .app-select:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.3);
+    outline: none;
+}
+
+/* Alerts and Messages */
+.alert-success {
+    background-color: #d1fae5;
+    color: #065f46;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-right: 4px solid #10b981;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-right: 4px solid #ef4444;
+}
+
+/* Progress Bar (Example) */
+.progress-bar-container {
+    height: 8px;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    transition: width 0.5s ease;
+    border-radius: 9999px;
+}
+
+/* Text Colors */
+.text-teal { color: var(--secondary-color); }
+.text-dark-teal { color: var(--primary-color); }
+.text-accent { color: var(--accent-color); }
