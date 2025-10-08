@@ -12,7 +12,7 @@
     <!-- ملف main.jsx سيستخدم الـ ID "root" كنقطة حقن التطبيق -->
     <div id="root"></div>
 
-    <!-- هذا السطر هو الأهم: يشير إلى ملف main.jsx كنقطة دخول لتطبيق JavaScript -->
-    <script type="module" src="/src/main.jsx"></script>
+    <!-- تم تعديل المسار إلى "./src/main.jsx" لضمان عمل البناء على Netlify (خطأ Rollup) -->
+    <script type="module" src="./src/main.jsx"></script>
 </body>
 </html>
