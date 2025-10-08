@@ -1,14 +1,17 @@
+// vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// إعداد Vite للمشروع
+// ⚙️ إعداد المشروع لـ Netlify
 export default defineConfig({
   plugins: [react()],
-  base: "./", // يضمن أن الموارد تُحمّل بشكل صحيح على نتفلاي
+  root: ".", // يحدد أن index.html في الجذر الرئيسي
   build: {
-    outDir: "dist",
+    outDir: "dist", // هذا مجلد الإخراج اللي يرفعه Netlify
+    emptyOutDir: true, // يحذف أي إصدار سابق قبل البناء
   },
   server: {
-    port: 5173,
+    port: 5173, // فقط أثناء التطوير المحلي
+    open: true,
   },
 });
