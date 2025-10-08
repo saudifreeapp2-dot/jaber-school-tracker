@@ -1,14 +1,13 @@
 [build]
-  # نحدد مجلد النشر ليكون المجلد الحالي (الجذر)
-  # هذا يحل مشكلة Netlify في تحديد المسارات بشكل قاطع.
-  publish = "."
-  
-  # يتم استخدام أمر بناء صوري لتجاوز مشكلة Rollup/Vite التي تظهر عند محاولة حل المسار.
-  command = "echo 'Netlify build skipped to resolve path errors'" 
+  # أمر البناء القياسي لمشاريع Vite
+  command = "npm run build" 
+
+  # مجلد النشر القياسي الذي ينتجه أمر 'vite build'
+  publish = "dist"
 
 [[redirects]]
-  # قاعدة إعادة التوجيه هذه ضرورية لتطبيقات الصفحة الواحدة (SPA) مثل React.
-  # يتم توجيه كل الطلبات إلى index.html
+  # هذه القاعدة ضرورية لـ React (تطبيقات الصفحة الواحدة)
+  # توجه كل المسارات إلى index.html
   from = "/*"
   to = "/index.html"
   status = 200
