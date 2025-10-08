@@ -14,17 +14,19 @@ import {
 import {
   getFirestore,
   doc,
-  getDoc,
+  onSnapshot,
 } from "firebase/firestore";
 
-/* ===============================
+/* =======================================================
    1) Helpers: Firebase config & appId
-   =============================== */
+   ======================================================= */
 const getFirebaseConfig = () => {
   // 1) من نافذة الصفحة ككائن جاهز
-  if (typeof window !== "undefined" &&
-      window.__firebase_config &&
-      window.__firebase_config.apiKey) {
+  if (
+    typeof window !== "undefined" &&
+    window.__firebase_config &&
+    window.__firebase_config.apiKey
+  ) {
     return window.__firebase_config;
   }
 
@@ -62,9 +64,9 @@ const getAppId = () => {
   return "9Baaxge04Smuxnsx4o5s";
 };
 
-/* ===============================
-   2) UI Components (Inline)
-   =============================== */
+/* =======================================================
+   2) UI Components (Inline, بدون استيراد ملفات خارجية)
+   ======================================================= */
 const box = {
   fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial",
   direction: "rtl",
@@ -90,18 +92,32 @@ function LoadingScreen({ debug = "" }) {
   return (
     <div style={box}>
       <div style={card}>
-        <div style={{display: "flex", alignItems: "center", gap: 12}}>
-          <span className="spinner" aria-hidden
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span
+            aria-hidden
             style={{
-              width: 18, height: 18, borderRadius: "50%",
-              border: "3px solid #e5e7eb", borderTopColor: "#0ea5e9",
-              display: "inline-block", animation: "spin 1s linear infinite"
+              width: 18,
+              height: 18,
+              borderRadius: "50%",
+              border: "3px solid #e5e7eb",
+              borderTopColor: "#0ea5e9",
+              display: "inline-block",
+              animation: "spin 1s linear infinite",
             }}
           />
-          <h3 style={{margin: 0}}>جارٍ التحميل وتأكيد الصلاحيات…</h3>
+          <h3 style={{ margin: 0 }}>جارٍ التحميل وتأكيد الصلاحيات…</h3>
         </div>
         {debug ? (
-          <pre style={{marginTop: 12, background: "#0b1220", color: "#dbeafe", borderRadius: 12, padding: 12, whiteSpace: "pre-wrap"}}>
+          <pre
+            style={{
+              marginTop: 12,
+              background: "#0b1220",
+              color: "#dbeafe",
+              borderRadius: 12,
+              padding: 12,
+              whiteSpace: "pre-wrap",
+            }}
+          >
             {String(debug)}
           </pre>
         ) : null}
@@ -122,7 +138,11 @@ function AuthScreen({ auth, onAuthSuccess }) {
     setErr("");
     setBusy(true);
     try {
-      const cred = await signInWithEmailAndPassword(auth, email.trim(), password);
+      const cred = await signInWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password
+      );
       onAuthSuccess?.(cred.user?.uid);
     } catch (e) {
       setErr(e?.message || String(e));
@@ -134,15 +154,20 @@ function AuthScreen({ auth, onAuthSuccess }) {
   return (
     <div style={box}>
       <div style={card}>
-        <h2 style={{marginTop: 0}}>تسجيل الدخول</h2>
-        <form onSubmit={doLogin} style={{display: "grid", gap: 12}}>
+        <h2 style={{ marginTop: 0 }}>تسجيل الدخول</h2>
+        <form onSubmit={doLogin} style={{ display: "grid", gap: 12 }}>
           <label>
             البريد الإلكتروني
             <input
               type="email"
               value={email}
-              onChange={e=>setEmail(e.target.value)}
-              style={{width:"100%", padding:"10px 12px", borderRadius:10, border:"1px solid #e5e7eb"}}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                borderRadius: 10,
+                border: "1px solid #e5e7eb",
+              }}
               placeholder="name@example.com"
               required
             />
@@ -152,8 +177,13 @@ function AuthScreen({ auth, onAuthSuccess }) {
             <input
               type="password"
               value={password}
-              onChange={e=>setPassword(e.target.value)}
-              style={{width:"100%", padding:"10px 12px", borderRadius:10, border:"1px solid #e5e7eb"}}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                borderRadius: 10,
+                border: "1px solid #e5e7eb",
+              }}
               placeholder="••••••••"
               required
             />
@@ -161,11 +191,18 @@ function AuthScreen({ auth, onAuthSuccess }) {
           <button
             type="submit"
             disabled={busy}
-            style={{padding:"10px 14px", border:0, borderRadius:10, background:"#0ea5e9", color:"#fff", cursor:"pointer"}}
+            style={{
+              padding: "10px 14px",
+              border: 0,
+              borderRadius: 10,
+              background: "#0ea5e9",
+              color: "#fff",
+              cursor: "pointer",
+            }}
           >
             {busy ? "جارٍ الدخول…" : "دخول"}
           </button>
-          {err ? <div style={{color:"#b91c1c"}}>❌ {err}</div> : null}
+          {err ? <div style={{ color: "#b91c1c" }}>❌ {err}</div> : null}
         </form>
       </div>
     </div>
@@ -204,15 +241,60 @@ function VerificationPrompt({ auth }) {
   return (
     <div style={box}>
       <div style={card}>
-        <h2 style={{marginTop:0}}>تأكيد البريد الإلكتروني</h2>
-        <p>تم تسجيل الدخول لكن البريد غير مُوثّق. افتح رابط التفعيل في بريدك، ثم اضغط "تحديث الحالة".</p>
-        <div style={{display:"flex", gap:10, flexWrap:"wrap"}}>
-          <button onClick={sendVerify} style={{padding:"10px 14px", border:0, borderRadius:10, background:"#0ea5e9", color:"#fff", cursor:"pointer"}}>إرسال رسالة تفعيل</button>
-          <button onClick={refresh} style={{padding:"10px 14px", border:0, borderRadius:10, background:"#111827", color:"#fff", cursor:"pointer"}}>تحديث الحالة</button>
-          <button onClick={()=>signOut(auth)} style={{padding:"10px 14px", border:0, borderRadius:10, background:"#ef4444", color:"#fff", cursor:"pointer"}}>تسجيل خروج</button>
+        <h2 style={{ marginTop: 0 }}>تأكيد البريد الإلكتروني</h2>
+        <p>
+          تم تسجيل الدخول لكن البريد غير مُوثّق. افتح رابط التفعيل في بريدك،
+          ثم اضغط "تحديث الحالة".
+        </p>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <button
+            onClick={sendVerify}
+            style={{
+              padding: "10px 14px",
+              border: 0,
+              borderRadius: 10,
+              background: "#0ea5e9",
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            إرسال رسالة تفعيل
+          </button>
+          <button
+            onClick={refresh}
+            style={{
+              padding: "10px 14px",
+              border: 0,
+              borderRadius: 10,
+              background: "#111827",
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            تحديث الحالة
+          </button>
+          <button
+            onClick={() => signOut(auth)}
+            style={{
+              padding: "10px 14px",
+              border: 0,
+              borderRadius: 10,
+              background: "#ef4444",
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            تسجيل خروج
+          </button>
         </div>
-        {sent ? <div style={{marginTop:10, color:"#065f46"}}>✅ تم إرسال رسالة التفعيل.</div> : null}
-        {err ? <div style={{marginTop:10, color:"#b91c1c"}}>❌ {err}</div> : null}
+        {sent ? (
+          <div style={{ marginTop: 10, color: "#065f46" }}>
+            ✅ تم إرسال رسالة التفعيل.
+          </div>
+        ) : null}
+        {err ? (
+          <div style={{ marginTop: 10, color: "#b91c1c" }}>❌ {err}</div>
+        ) : null}
       </div>
     </div>
   );
@@ -222,13 +304,35 @@ function Dashboard({ auth, userRole, userId }) {
   return (
     <div style={box}>
       <div style={card}>
-        <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8}}>
-          <h2 style={{margin:0}}>لوحة التحكم</h2>
-          <button onClick={()=>signOut(auth)} style={{padding:"8px 12px", border:0, borderRadius:10, background:"#ef4444", color:"#fff", cursor:"pointer"}}>خروج</button>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 8,
+          }}
+        >
+          <h2 style={{ margin: 0 }}>لوحة التحكم</h2>
+          <button
+            onClick={() => signOut(auth)}
+            style={{
+              padding: "8px 12px",
+              border: 0,
+              borderRadius: 10,
+              background: "#ef4444",
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            خروج
+          </button>
         </div>
-        <p style={{marginTop:0}}>مرحبًا 👋 — الدور: <b>{userRole || "—"}</b> — UID: <code>{userId || "—"}</code></p>
-        <div style={{marginTop:12, padding:12, background:"#f1f5f9", borderRadius:12}}>
-          <div>✅ تم تجاوز شاشة التحميل بنجاح.</div>
+        <p style={{ marginTop: 0 }}>
+          مرحبًا 👋 — الدور: <b>{userRole || "—"}</b> — UID:{" "}
+          <code>{userId || "—"}</code>
+        </p>
+        <div style={{ marginTop: 12, padding: 12, background: "#f1f5f9", borderRadius: 12 }}>
+          <div>✅ تم الدخول بنجاح.</div>
           <div>يمكن لاحقًا تقييد البطاقات حسب الدور.</div>
         </div>
       </div>
@@ -236,9 +340,9 @@ function Dashboard({ auth, userRole, userId }) {
   );
 }
 
-/* ===============================
+/* =======================================================
    3) App Component
-   =============================== */
+   ======================================================= */
 const App = () => {
   const firebaseConfig = useMemo(getFirebaseConfig, []);
   const appId = useMemo(getAppId, []);
@@ -258,98 +362,93 @@ const App = () => {
   const [userRole, setUserRole] = useState(null);
   const [roleError, setRoleError] = useState(null);
 
-  // جلب الدور من Firestore
-  const fetchUserRole = useCallback(
-    async (uid) => {
-      try {
-        setRoleError(null);
-        if (!uid) {
+  // استماع مباشر لوثيقة الدور
+  const subscribeToRole = useCallback(
+    (uid) => {
+      if (!uid) return () => {};
+      const ref = doc(
+        db,
+        "artifacts",
+        appId,
+        "users",
+        uid,
+        "user_profile",
+        "roles"
+      );
+      console.log("👂 listening role:", ref.path);
+      return onSnapshot(
+        ref,
+        (snap) => {
+          if (snap.exists()) {
+            const data = snap.data();
+            setUserRole(data?.role || null);
+          } else {
+            setUserRole(null);
+          }
+        },
+        (e) => {
+          console.error("role listen error:", e);
+          setRoleError(e?.message || String(e));
           setUserRole(null);
-          return;
         }
-        const ref = doc(db, "artifacts", appId, "users", uid, "user_profile", "roles");
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          const data = snap.data();
-          const role = data?.role || null;
-          setUserRole(role);
-          console.log("✅ role doc:", { path: ref.path, data });
-        } else {
-          setUserRole(null);
-          console.warn("⚠️ role doc not found for:", uid, "at appId:", appId);
-        }
-      } catch (e) {
-        console.error("❌ Failed to fetch role:", e);
-        setRoleError(e?.message || String(e));
-        setUserRole(null);
-      }
+      );
     },
     [db, appId]
   );
 
-  // مراقبة حالة المستخدم
+  // مراقبة حالة المستخدم + الاشتراك للدور
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
+    let unSubRole = () => {};
+    const unSubAuth = onAuthStateChanged(auth, async (user) => {
       try {
         if (!user) {
           setIsAuthenticated(false);
           setIsEmailVerified(false);
           setUserId(null);
           setUserRole(null);
-          setIsAuthReady(true);
+          if (unSubRole) unSubRole();
           return;
         }
 
-        // تحديث بيانات المستخدم (للتحقق من البريد بعد التفعيل)
-        try { await reloadUser(user); } catch {}
+        try {
+          await reloadUser(user); // لتحديث حالة التفعيل
+        } catch {}
 
         setIsAuthenticated(true);
         setIsEmailVerified(!!user.emailVerified);
         setUserId(user.uid);
 
-        // جلب الدور
-        await fetchUserRole(user.uid);
+        if (unSubRole) unSubRole();
+        unSubRole = subscribeToRole(user.uid);
       } finally {
         setIsAuthReady(true);
       }
     });
 
-    return () => unsub();
-  }, [auth, fetchUserRole]);
+    return () => {
+      unSubAuth();
+      if (unSubRole) unSubRole();
+    };
+  }, [auth, subscribeToRole]);
 
   // عند نجاح تسجيل/تفعيل من شاشة Auth
-  const handleAuthSuccess = async (uidFromAuth) => {
-    const uid = uidFromAuth || auth.currentUser?.uid;
-    if (uid) {
-      await fetchUserRole(uid);
-    }
+  const handleAuthSuccess = async () => {
+    // لا شيء ضروري هنا لأن onAuthStateChanged + onSnapshot يحدّثان الحالة تلقائيًا
   };
 
-  /* ===============================
-     4) Routing-less render logic
-     =============================== */
+  /* =======================================================
+     4) Render logic (بدون أي تجاوز مؤقت)
+     ======================================================= */
   if (!isAuthReady) return <LoadingScreen />;
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated)
     return <AuthScreen auth={auth} onAuthSuccess={handleAuthSuccess} />;
-  }
 
-  if (!isEmailVerified) {
-    return <VerificationPrompt auth={auth} />;
-  }
+  if (!isEmailVerified) return <VerificationPrompt auth={auth} />;
 
-  // إذا وُجد دور صحيح نعرض الداشبورد مباشرة
-  if (userRole) {
-    return <Dashboard auth={auth} userRole={userRole} userId={userId} />;
-  }
+  if (userRole) return <Dashboard auth={auth} userRole={userRole} userId={userId} />;
 
-  // 🔧 تجاوز مؤقت (اختبار فقط) لمنع التعليق على شاشة التحميل
-  if (isAuthenticated && isEmailVerified && !userRole) {
-    console.warn("⚠️ لم يُكتشف الدور، سيتم تعيينه افتراضيًا كمشرف (اختبار مؤقت).");
-    return <Dashboard auth={auth} userRole="مشرف" userId={userId} />;
-  }
-
-  // حالات نادرة أثناء الجلب
+  // مستخدم موثّق لكن لم تُقرأ وثيقة الدور بعد (أو غير موجودة)
   return <LoadingScreen debug={roleError ? `roleError: ${roleError}` : ""} />;
 };
 
