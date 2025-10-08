@@ -1,13 +1,11 @@
+# إعدادات النشر في نتفلاي
 [build]
-  # أمر البناء القياسي لمشاريع Vite
-  command = "npm run build" 
-
-  # مجلد النشر القياسي الذي ينتجه أمر 'vite build'
+  command = "npm run build"
   publish = "dist"
 
+# إعادة توجيه كل الطلبات إلى index.html
+# حتى تعمل روابط React Router بشكل صحيح
 [[redirects]]
-  # هذه القاعدة ضرورية لـ React (تطبيقات الصفحة الواحدة)
-  # توجه كل المسارات إلى index.html
   from = "/*"
   to = "/index.html"
   status = 200
