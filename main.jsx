@@ -20,20 +20,23 @@ const firebaseConfig = {
   measurementId: "G-DRPM6L1NHK",
 };
 
+// بعض الأكواد القديمة عندك تعتمد على هالمتغيرين العالميين:
+window.__app_id = "jaber-school";          // <- عيّنه حسب ما تريد
+window.__firebase_config = firebaseConfig;  // <- مهم: علشان يختفي تحذير "Firebase configuration is missing."
+
 // ================= Firebase Init =================
 let firebaseApp, db;
 try {
   firebaseApp = initializeApp(firebaseConfig);
   db = getFirestore(firebaseApp);
 
-  // Analytics (يعمل فقط على المتصفح، وليس أثناء الـ build)
   if (typeof window !== "undefined") {
     isSupported().then((ok) => {
       if (ok) getAnalytics(firebaseApp);
     });
   }
 
-  // نجعلها متاحة عالمياً عند الحاجة
+  // للوصول السريع إن احتجتها في ملفات أخرى
   window.__firebaseApp = firebaseApp;
   window.__db = db;
 } catch (e) {
@@ -48,5 +51,4 @@ createRoot(rootEl).render(
   </React.StrictMode>
 );
 
-// exports اختيارية لو احتجتها بصفحات أخرى
 export { firebaseApp, db };
