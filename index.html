@@ -12,7 +12,7 @@
     <!-- ملف main.jsx سيستخدم الـ ID "root" كنقطة حقن التطبيق -->
     <div id="root"></div>
 
-    <!-- تم تعديل المسار إلى "./src/main.jsx" لضمان عمل البناء على Netlify (خطأ Rollup) -->
-    <script type="module" src="./src/main.jsx"></script>
+    <!-- المسار المطلق /src/main.jsx يعمل بشكل صحيح مع إعدادات vite.config.js الأخيرة -->
+    <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
