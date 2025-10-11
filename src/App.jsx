@@ -118,17 +118,23 @@ const App = () => {
 
         const roleDocRef = getProfileDocPath(userId);
 
-        const unsubscribeRole = onSnapshot(roleDocRef, (docSnap) => {
-            if (docSnap.exists() && docSnap.data().role) {
-                const role = docSnap.data().role;
-                setUserRole(role);
-                setCurrentScreen('dashboard');
-            } else {
-                setUserRole(null);
-                setCurrentScreen('role_selection');
-            }
-            setLoading(false);
-        }, (err) => {
+        const unsubscribeRole = onSnapshot(getProfileDocPath(currentUser.uid), (doc) => {
+  const roleData = doc.data();
+  if (roleData && roleData.role) {
+    setUserRole(roleData.role);
+    setCurrentScreen('dashboard');
+  } else {
+    // احتياطي: لو ما رجع بث من onSnapshot نقرأه يدويًا
+    getDoc(getProfileDocPath(currentUser.uid)).then((snap) => {
+      const data = snap.data();
+      if (data && data.role) {
+        setUserRole(data.role);
+        setCurrentScreen('dashboard');
+      }
+    });
+  }
+});
+
             console.error("Error fetching user role:", err);
             setError("حدث خطأ في جلب بيانات الدور. حاول مرة أخرى.");
             setLoading(false);
@@ -1917,3 +1923,4 @@ const App = () => {
 };
 
 export default App;
+
