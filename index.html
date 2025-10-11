@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>نظام متابعة ملاحظات جابر بن عبدالله</title>
+
+    <!-- Tailwind CDN (يكفي لاستخدامك الحالي) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- (اختياري) خط عربي جميل -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- مرر متغيرات عامة (إن حبيت تغيّر appId من هنا) -->
+    <script>
+      // يمكن تغييره لتمييز التطبيق على Firestore
+      window.__app_id = "jaber-app";
+      // اتركه فارغ، أو مرّر توكن مخصص إن عندك سيرفر يولّده
+      // window.__initial_auth_token = "JWT_CUSTOM_TOKEN_HERE";
+      // إن أردت تمرير إعدادات Firebase من خارج الكود:
+      // window.__firebase_config = JSON.stringify({ ...config });
+    </script>
+
+    <style>
+      body { font-family: 'Tajawal', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
